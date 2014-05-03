@@ -1,25 +1,29 @@
+"""
+Local development settings
+"""
+
 from aornfoxvalley.settings.base import *
 
 
 DEBUG = True
 
-MEDIA_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../', 'aornfoxvalley_media'))
+TEMPLATE_DEBUG = True
 
-STATIC_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../', 'aornfoxvalley_media/static'))
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+]
+
+MEDIA_ROOT = os.path.join(REPOSITORY_ROOT, 'assets', 'media')
+
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(REPOSITORY_ROOT, 'assets', 'static')
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (
-    PROJECT_ROOT + '/static/',
-)
-
-TEMPLATE_DIRS = (
-    PROJECT_ROOT + '/templates/',
-)
 
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
-
