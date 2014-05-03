@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+
+{% load i18n typogrify_tags %}
+
+
+{% block title %}{{ title }} | {{ site.name|typogrify|striptags }} admin{% endblock %}
+
+
+{% block extrastyle %}
+<style type="text/css">
+    body.login #container { border-radius: .5em; box-shadow: 0 1px 0 #fff; }
+    body.login #header { border-top-right-radius: .5em; border-top-left-radius: .5em; }
+    #header { background: -webkit-linear-gradient(top, #009FDA 0%, #0087B8 100%); text-shadow: 0 -1px 0 rgba(0,0,0,.5); }
+    #branding h1 { color: #fff; }
+    #footer { padding: 5px; }
+</style>
+{% endblock %}
+
+
+{% block branding %}
+<h1 id="site-name">{{ site.name|typogrify|striptags }} admin</h1>
+{% endblock %}
+
+
+{% block nav-global %}{% endblock %}

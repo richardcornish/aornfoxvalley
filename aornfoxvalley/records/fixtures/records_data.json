@@ -1,0 +1,38 @@
+[
+    {
+        "model": "records.category",
+        "pk": 1,
+        "fields": {
+            "title": "By-laws",
+            "slug": "by-laws"
+        }
+    }, {
+        "model": "records.category",
+        "pk": 2,
+        "fields": {
+            "title": "Policy manuals",
+            "slug": "policy-manuals"
+        }
+    }, {
+        "model": "records.category",
+        "pk": 3,
+        "fields": {
+            "title": "President's letters",
+            "slug": "presidents-letters"
+        }
+    }, {
+        "model": "records.category",
+        "pk": 4,
+        "fields": {
+            "title": "Treasurer's reports",
+            "slug": "treasurers-reports"
+        }
+    }, {
+        "model": "records.category",
+        "pk": 5,
+        "fields": {
+            "title": "Congress reports",
+            "slug": "congress-reports"
+        }
+    }
+]

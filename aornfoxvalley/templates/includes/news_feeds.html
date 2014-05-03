@@ -1,0 +1,7 @@
+{% load i18n typogrify_tags %}
+{% load url from future %}
+
+
+<div class="feed">
+    <p><a href="{% url 'news_announcement_feed' %}">{% filter typogrify %}{% trans "Announcements RSS feed" %}{% endfilter %}</a></p>
+</div>

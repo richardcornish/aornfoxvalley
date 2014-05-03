@@ -1,0 +1,36 @@
+{% extends "news/news_base.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags %}
+
+
+{% block title %}{{ announcement.title|typogrify|striptags }} | {% endblock %}
+
+
+{% block body_class %}{{ block.super }} announcement_detail{% endblock %}
+
+
+{% block main %}
+
+    <h1>{{ announcement.title|typogrify }}</h1>
+    
+    <p class="date-time">Posted on <time datetime="{{ announcement.published|date:"c" }}" pubdate="pubdate"><span class="day">{{ announcement.published|date:"F j, Y" }}</span></time></p>
+
+    <div class="body">
+        {% if announcement.image %}
+        <div class="image right"><a href="{{ announcement.get_absolute_url }}"><img src="{{ announcement.image.url }}" width="{{ announcement.image.width }}" height="{{ announcement.image.height }}" alt="{{ announcement.title|typogrify|striptags }}"></a></div>
+        {% endif %}
+        {{ announcement.body|markdown|typogrify|emoji }}
+    </div>
+
+    {% if announcement.get_next or announcement.get_previous %}
+    <ul>
+        {% if announcement.get_next %}<li class="next">Next: <a href="{{ announcement.get_next.get_absolute_url }}" title="{% blocktrans with title=announcement.get_next.title|typogrify|striptags %}{{ title }}{% endblocktrans %}">{% blocktrans with title=announcement.get_next.title|typogrify|striptags %}{{ title }}{% endblocktrans %}</a></li>{% endif %}
+        {% if announcement.get_previous %}<li class="previous">Previous: <a href="{{ announcement.get_previous.get_absolute_url }}" title="{% blocktrans with title=announcement.get_previous.title|typogrify|striptags %}{{ title }}{% endblocktrans %}">{% blocktrans with title=announcement.get_previous.title|typogrify|striptags %}{{ title }}{% endblocktrans %}</a></li>{% endif %}
+    </ul>
+    {% endif %}
+
+
+    {% include "includes/news_feeds.html" %}
+
+
+{% endblock %}

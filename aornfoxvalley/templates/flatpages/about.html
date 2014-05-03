@@ -1,0 +1,91 @@
+{% extends "flatpages/default.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags get_members get_offices get_committees get_links email %}
+{% load url from future %}
+
+
+{% block main %}
+
+<h1>{% blocktrans with title=flatpage.title|typogrify %}{{ title }}{% endblocktrans %}</h1>
+
+<div class="body">
+
+
+    {{ flatpage.content|markdown|typogrify|emoji }}
+
+
+    {% get_offices as office_list %}
+
+    {% if office_list %}
+    <h2>{% trans "Officers" %}</h2>
+    
+    <div class="office_list list">
+    {% for office in office_list %}
+        <div class="office item">
+            <h3>{{ office.title }}</h3>
+            {% for member in office.member_set.all %}
+    
+                {% if member.image %}
+                    <div class="image"><img src="{{ member.image.url }}" width="{{ member.image.width }}" height="{{ member.image.height }}" alt="{{ member.name|typogrify|striptags }}"></div>
+                {% endif %}    
+                <p>{% if member.email %}<a href="mailto:{{ member.email|encode_string|safe }}">{% endif %}{{ member.name }}{% if member.email %}</a>{% endif %}</p>
+    
+            {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+    
+    {% get_committees as committee_list %}
+
+    {% if committee_list %}
+    <h2>{% trans "Committees" %}</h2>
+    
+    <div class="committee_list list">
+    {% for committee in committee_list %}
+        <div class="committee item">
+            <h3>{{ committee.title }}</h3>
+            <ul>
+            {% for member in committee.member_set.all %}
+                <li>{% if member.email %}<a href="mailto:{{ member.email|encode_string|safe }}">{% endif %}{{ member.name }}{% if member.email %}</a>{% endif %}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+
+    {% get_members as member_list %}
+
+    <h2>{% trans "Members" %}</h2>
+
+    <ul>
+    {% for member in member_list %}
+        <li>{{ member.name }}</li>
+    {% endfor %}
+    </ul>
+
+
+    {% get_links as link_list %}
+
+    {% if link_list %}
+    {% regroup link_list|dictsort:"category.title" by category as category_list %}
+    <h2>{% trans "Links" %}</h2>
+    
+    <div class="link_list list">
+        {% for category in category_list %}
+        <h3>{{ category.grouper.title }}</h3>
+        <ul>
+            {% for link in category.list %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

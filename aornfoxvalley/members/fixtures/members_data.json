@@ -1,0 +1,45 @@
+[
+    {
+        "model": "members.office",
+        "pk": 1,
+        "fields": {
+            "title": "President",
+            "slug": "president"
+        }
+    }, {
+        "model": "members.office",
+        "pk": 2,
+        "fields": {
+            "title": "President-Elect",
+            "slug": "president-elect"
+        }
+    }, {
+        "model": "members.office",
+        "pk": 3,
+        "fields": {
+            "title": "Secretary",
+            "slug": "secretary"
+        }
+    }, {
+        "model": "members.office",
+        "pk": 4,
+        "fields": {
+            "title": "Treasurer",
+            "slug": "treasurer"
+        }
+    }, {
+        "model": "members.committee",
+        "pk": 1,
+        "fields": {
+            "title": "Board members",
+            "slug": "board-members"
+        }
+    }, {
+        "model": "members.committee",
+        "pk": 3,
+        "fields": {
+            "title": "Nominating committee",
+            "slug": "nominating-committee"
+        }
+    }
+]

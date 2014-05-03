@@ -1,0 +1,7 @@
+{% load i18n markup %}{% spaceless %}
+
+{{ obj.body|safe|markdown }}
+
+<p><a href="http://{{ site.domain }}{{ obj.get_absolute_url }}">{% trans "Permalink" %}</a></p>
+
+{% endspaceless %}

@@ -1,0 +1,31 @@
+{% load tz markup remove_newlines escape_commas %}{% get_current_timezone as timezone %}{% spaceless %}
+
+BEGIN:VCALENDAR
+PRODID:{{ site.name }}
+VERSION:2.0
+X-WR-TIMEZONE:{{ timezone }}
+X-WR-CALNAME:{{ site.name }} events
+X-WR-CALDESC:{{ site.name }} events
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:{{ event.date_time|date:"U" }}
+SUMMARY:{{ event.title|safe }}
+DESCRIPTION:{{ event.body|safe|markdown|striptags|remove_newlines }}
+URL:http://{{ site.domain }}{{ event.get_absolute_url }}
+CLASS:PUBLIC
+DTSTART:{{ event.date_time|date:"Ymd" }}T{{ event.date_time|date:"His" }}
+DTEND:{{ event.date_time_endish|date:"Ymd" }}T{{ event.date_time_endish|date:"His" }}
+DTSTAMP:{{ event.date_time|date:"Ymd" }}T{{ event.date_time|date:"His" }}
+LOCATION:{{ event.place|escape_commas }}
+TRANSP:OPAQUE
+PRIORITY:5
+X-MICROSOFT-CDO-IMPORTANCE:1
+BEGIN:VALARM
+TRIGGER:-PT120M
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+END:VALARM
+END:VEVENT
+END:VCALENDAR
+
+{% endspaceless %}

@@ -1,0 +1,15 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+    
+    {% load adminmedia %}
+
+    <script>
+        jQuery(function () {
+            'use strict';
+            ADMIN_PLUS.addMarkItUp('#id_bio');
+        });
+    </script>
+    
+{% endblock %}

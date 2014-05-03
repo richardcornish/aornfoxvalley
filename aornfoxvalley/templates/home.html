@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags %}
+{% load url from future %}
+
+
+{% block body_class %}{{ block.super }} home{% endblock %}
+
+
+{% block site_title %}
+<h1><a href="{% url 'home' %}">{{ site.name }}</a></h1>
+{% endblock %}
+
+
+{% block main %}
+
+<div class="grid">
+    <div class="m-row">
+        <div class="t-row">
+            <div class="m-col-8 t-col-4">
+                
+                <main id="main" role="main">
+                    <div class="blurb">
+                        <p><strong>AORN Fox Valley Chapter 1412</strong> is a division of the <a href="http://aorn.org/">Association of periOperative Registered Nurses</a> in Fox Valley by <strong>Chicago, Illinois</strong>.</p>
+                        <div class="more">
+                            <p><a href="/about/">Read more about us</a></p>
+                        </div>
+                    </div>
+
+                    <h2><a href="{% url 'news_announcement_list' %}">{% trans "Announcements" %}</a></h2>
+
+                    {% for announcement in announcement_list %}
+                    <div class="announcement list">
+                        <h3><a href="{{ announcement.get_absolute_url }}">{{ announcement.title|typogrify }}</a></h3>
+                        {% if announcement.image %}
+                        <div class="image image-right"><a href="{{ announcement.get_absolute_url }}"><img src="{{ announcement.image.url }}" width="{{ announcement.image.width }}" height="{{ announcement.image.height }}" alt="{{ announcement.title|typogrify|striptags }}"></a></div>
+                        {% endif %}
+                        {{ announcement.body|markdown|typogrify|emoji }}
+                        <p><a href="{{ announcement.get_absolute_url }}">{% trans "Details" %}</a></p>
+                    </div>
+                    {% endfor %}
+
+                    <p><a href="{% url 'news_announcement_list' %}">{% trans "More announcements" %}</a></p>
+                    
+                </main>
+            </div>
+            
+            <div class="m-col-3 t-col-2 ">
+                <h2><a href="{% url 'events_event_list' %}">{% trans "Events" %}</a></h2>
+
+                {% for event in event_list %}
+                    <p><a href="{{ event.get_absolute_url }}">{{ event.title|typogrify }}</a></p>
+                    {% empty %}
+                    <p>{% trans "No upcoming events scheduled." %}</p>
+                {% endfor %}
+
+                {% if event_list %}
+                <p><a href="{% url 'events_event_list' %}">{% trans "More events" %}</a></p>
+                {% else %}
+                <p><a href="{% url 'events_past_event_list' %}">{% trans "Previous events" %}</a></p>
+                {% endif %}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}

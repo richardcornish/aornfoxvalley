@@ -1,0 +1,115 @@
+{% load i18n typogrify_tags email %}{% load url from future %}{% get_current_language as language %}<!DOCTYPE html>
+
+<html lang="{{ language }}" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}{{ site.name|typogrify|striptags }}</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}website/css/style.css">
+    {% block extra_css %}
+    {% endblock %}
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ STATIC_URL }}website/img/icon-touch-144x144.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}website/img/icon-touch-114x114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}website/img/icon-touch-72x72.png">
+    <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}website/img/icon-touch.png">
+    <meta name="apple-mobile-web-app-title" content="AORN 1412">
+
+    <link rel="alternate" type="application/rss+xml" title="{{ site.name }}'s news RSS feed" href="{% url 'news_announcement_feed' %}">
+    <link rel="alternate" type="application/rss+xml" title="{{ site.name }}'s events RSS feed" href="{% url 'events_event_feed' %}">
+
+    {% block extra_head %}
+    {% endblock %}
+
+    <script src="{{ STATIC_URL }}website/js/respond.min.js"></script>
+
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    
+    <div class="grid site-header">
+        <div class="m-row">
+            <div class="t-row">
+                <div class="m-col-12 t-col-6">
+                    {% block header %}
+                    <header role="banner">
+                        
+                        <div class="site-title ir">
+                        {% block site_title %}
+                            <p><a href="{% url 'home' %}">{{ site.name|typogrify }}</a></p>                            
+                        {% endblock %}
+                        </div>
+
+                        <div class="access visuallyhidden">
+                            <p><a href="#main">{% trans "Skip navigation" %}</a></p>
+                        </div>
+
+                    </header>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid">
+        <div class="m-row">
+            <div class="t-row">
+                <div class="m-col-12 t-col-6">
+                    {% block navigation %}
+                    <div class="nav-toggler button"></div>
+                    <div class="nav nav-horizontal nav-responsive" data-behavior="nav-hide">
+                        <nav role="navigation">
+                            <ul>
+                                <li class="nav-home"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+                                <li class="nav-announcements"><a href="{% url 'news_announcement_list' %}">{% trans "News" %}</a></li>
+                                <li class="nav-events"><a href="{% url 'events_event_list' %}">{% trans "Events" %}</a></li>
+                                <li class="nav-speakers"><a href="{% url 'speakers_speaker_list' %}">{% trans "Speakers" %}</a></li>
+                                <li class="nav-records"><a href="{% url 'records_record_list' %}">{% trans "Records" %}</a></li>
+                                <li class="nav-about"><a href="/about/">{% trans "About" %}</a></li>
+                            </ul>
+                        </nav>                        
+                    </div>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block main %}
+    {% endblock %}
+
+    <div class="grid">
+        <div class="m-row">
+            <div class="t-row">
+                <div class="m-col-12 t-col-6">
+                    {% block footer %}
+                    <footer role="contentinfo">
+                        <p>Contact us at <a href="mailto:{{ email|encode_string|safe }}">{{ email|encode_string|safe }}</a>. &copy; 2001&#8211;{% now "Y" %} <a href="{% url 'home' %}">{{ site.name|typogrify }}</a>.</p>
+                    </footer>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% block js %}
+    <script src="{{ STATIC_URL }}website/js/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}website/js/jquery.site.js"></script>
+    {% comment %}
+    <script>
+        var _gaq=[['_setAccount','UA-661139-1'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g,s)}(document,'script'));
+    </script>
+    {% endcomment %}
+    {% endblock %}
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+</html>

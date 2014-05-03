@@ -1,0 +1,51 @@
+{% extends "events/events_base.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags %}
+{% load url from future %}
+
+
+{% block title %}{% trans "Events" %} | {% endblock %}
+
+
+{% block body_class %}{{ block.super }} event_list{% endblock %}
+
+
+{% block main %}
+
+<h1>{% trans "Events" %}</h1>
+
+<div class="event_list list" itemscope itemtype="http://schema.org/Event">
+{% for event in event_list %}
+    <div class="event item">
+
+        <h2 itemprop="name"><a href="{{ event.get_absolute_url }}">{{ event.title|typogrify }}</a></h2>
+
+        <p class="date-time"><time datetime="{{ event.date_time|date:"c" }}" itemprop="startDate" content="{{ event.date_time|date:"c" }}"><span class="day">{{ event.date_time|date:"j F Y" }}</span> <span class="time">{{ event.date_time|date:"P" }}</span></time></p>
+
+        <div class="image right" itemprop="image">
+            <a href="{{ event.get_absolute_url }}">
+                {% if event.image %}
+                <img src="{{ event.image.url }}" width="{{ event.image.width }}" height="{{ event.image.height }}" alt="{{ event.title|typogrify|striptags }}">
+                {% elif event.speaker.image %}
+                <img src="{{ event.speaker.image.url }}" width="{{ event.speaker.image.width }}" height="{{ event.speaker.image.height }}" alt="{{ event.speaker.name|typogrify|striptags }}">
+                {% endif %}
+            </a>
+        </div>
+
+        {{ event.body|markdown|typogrify|emoji }}
+
+        <p class="permalink"><a href="{{ event.get_absolute_url }}" itemprop="url">{% trans "Details" %}</a></p>
+
+    </div>
+    {% empty %}
+
+    <p>{% trans "No upcoming events scheduled." %}</p>
+
+{% endfor %}
+</div>
+
+<p><a href="{% url 'events_past_event_list' %}">{% trans "Past events" %}</a></p>
+
+{% include "includes/events_feeds.html" %}
+
+{% endblock %}

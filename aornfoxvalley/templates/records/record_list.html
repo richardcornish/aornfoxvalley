@@ -1,0 +1,48 @@
+{% extends "records/records_base.html" %}
+
+{% load i18n markup typogrify_tags email %}
+
+
+{% block title %}{% trans "Records" %} | {% endblock %}
+
+
+{% block body_class %}{{ block.super }} record_list{% endblock %}
+
+
+{% block main %}
+
+<h1>{% trans "Records" %}</h1>
+
+
+{% if bylaw or policy %}
+<h2>{% filter typogrify %}{% trans "By-laws & Policy manual" %}{% endfilter %}</h2>
+
+<div class="general_record_list record_list list">
+    <ul>
+        <li><a href="{{ bylaw.document.url }}">{{ bylaw.title|typogrify }}</a></li>
+        <li><a href="{{ policy.document.url }}">{{ policy.title|typogrify }}</a></li>
+    </ul>
+</div>
+{% endif %}
+
+
+{% if record_list %}
+{% regroup record_list|dictsort:"category" by category as category_list %}
+{% for category in category_list %}
+<h2>{{ category.grouper.title|typogrify }}</h2>
+
+<div class="record_list list">
+    <ul>
+        {% for record in category.list %}
+        <li>
+            <p><a href="{{ record.document.url }}">{{ record.title }}</a></p>
+            <p>{{ record.published|date:"F, Y" }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endfor %}
+{% endif %}
+
+
+{% endblock %}

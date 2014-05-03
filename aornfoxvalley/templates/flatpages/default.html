@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags %}
+{% load url from future %}
+
+
+{% block title %}{{ flatpage.title|typogrify|striptags }} | {% endblock %}
+
+
+{% block body_class %}{{ block.super }} flatpage{% endblock %}
+
+
+{% block main %}
+
+<h1>{% blocktrans with title=flatpage.title|typogrify %}{{ title }}{% endblocktrans %}</h1>
+
+<div class="body">
+    {{ flatpage.content|markdown|typogrify|emoji }}
+</div>
+
+{% endblock %}

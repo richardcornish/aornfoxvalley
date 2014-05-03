@@ -1,0 +1,161 @@
+{% extends "events/events_base.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags add_break plusify %}
+{% load url from future %}
+
+
+{% block title %}{{ event.title|typogrify|striptags }} | {% endblock %}
+
+
+{% block extra_css %}
+    <link rel="stylesheet" href="http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css">
+    
+    {% comment %}
+    <style>
+        #map { width: 100%; height: 300px; }
+    </style>
+    {% endcomment %}
+{% endblock %}
+
+
+{% block body_class %}{{ block.super }} event_detail{% endblock %}
+
+
+{% block main %}
+
+<div class="event" itemscope itemtype="http://schema.org/Event">
+    
+    <h1 itemprop="name">{{ event.title|typogrify }}</h1>
+    
+    <div class="details">
+    
+        <div class="date">
+            <h2>{% trans "Date" %} <span class="amp">&amp;</span> {% trans "time" %}</h2>
+            <p class="date-time"><time datetime="{{ event.date_time|date:"c" }}">
+
+                <span class="date-start" itemprop="startDate" content="{{ event.date_time|date:"c" }}">
+                {% blocktrans with day=event.date_time|date:"F j, Y" %}
+                    <span class="day">{{ day }}</span>
+                {% endblocktrans %}
+                
+                {% blocktrans with time=event.date_time|date:"P" %}
+                    <span class="time">{{ time }}</span>
+                {% endblocktrans %}
+                </span>
+
+                &#8211;
+
+                <span class="date-end" itemprop="endDate" content="{{ event.date_time_endish|date:"c" }}">
+                {% if event.date_time_endish|date:"F j, Y" != event.date_time|date:"F j, Y" %}
+                    {% blocktrans with date_end=event.date_time_endish|date:"F j, Y" time_end=event.date_time_endish|date:"f a" %}
+                        <span class="day">{{ date_end }}</span>, <span class="time">{{ time_end }}</span>
+                    {% endblocktrans %}
+                {% else %}
+                    {% blocktrans with time_end=event.date_time_endish|date:"P" %}
+                        <span class="time">{{ time_end }}</span>
+                    {% endblocktrans %}
+                {% endif %}
+                </span>
+    
+            </span></time></p>
+        </div>
+    
+        <div class="place" itemprop="location" itemscope itemtype="http://schema.org/Place">
+            <h2>{% trans "Location" %}</h2>
+            {% if event.place.image %}
+            <div class="image left"><img src="{{ event.place.image.url }}" width="{{ event.place.image.width }}" height="{{ event.place.image.height }}" alt="{{ event.place.title|typogrify|striptags }}"></div>
+            {% endif %}
+
+            <div class="map" id="map">
+                
+            </div>
+
+            <address class="address" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                <span class="title">{{ event.place.title }}</span><br>
+                <a href="https://maps.{{ maps_service }}.com?daddr={{ event.place.address_basic|urlencode|plusify }},+{{ event.place.city|urlencode|plusify }},{% if event.place.state %}+{{ event.place.state|urlencode|plusify }}{% endif %}{% if event.place.zip_code %}+{{ event.place.zip_code|urlencode|plusify }}{% endif %}{% if event.place.province %}+{{ event.place.province|urlencode|plusify }}{% endif %}{% if event.place.postal_code %}+{{ event.place.postal_code|urlencode|plusify }}{% endif %}{% if event.place.country %},+{{ event.place.country|urlencode|plusify }}{% endif %}">{{ event.place.address_1 }}<br>
+                {% if event.place.address_2 %}{{ event.place.address_2 }}<br>{% endif %}
+                <span itemprop="addressLocality">{{ event.place.city }}</span>, <span itemprop="addressRegion">{{ event.place.state }}</span> {{ event.place.zip_code }}</a>
+            </address>
+        </div>
+    
+        {% if event.place.url %}
+        <div class="url">
+            <p><a href="{{ event.place.url }}">{{ event.place.website }}</a></p>
+        </div>
+        {% endif %}
+    
+    </div>
+    
+    <div class="body" itemprop="description">
+    
+        {% if event.image %}
+        <div class="image right" itemprop="image"><img src="{{ event.image.url }}" width="{{ event.image.width }}" height="{{ event.image.height }}" alt=""></div>
+        {% endif %}
+    
+        <h2>{% trans "Description" %}</h2>
+    
+        {{ event.body|markdown|typogrify|emoji }}
+    
+        {% if event.url %}
+        <div class="url">
+            <p>{% trans "For more information, visit" %} <a href="{{ event.url }}">{{ event.website }}</a></p>
+        </div>
+        {% endif %}
+        
+        {% if event.speaker or event.topic %}
+        <div class="meeting">
+            {% if event.topic %}
+            <div class="topic">
+                <h2>{% trans "Topic" %}</h2>
+                <p>{{ event.topic|typogrify }}</p>
+            </div>
+            {% endif %}
+            {% if event.speaker %}
+            <div class="speaker">
+                <h2>{% trans "Speaker" %}</h2>
+                {% if event.speaker.image %}
+                <div class="image left"><img src="{{ event.speaker.image.url }}" width="{{ event.speaker.image.width }}" height="{{ event.speaker.image.height }}" alt="{{ event.speaker.name|typogrify|striptags }}"></div>
+                {% endif %}
+                <p>{{ event.speaker.name|typogrify }}</p>
+                <p>{{ event.speaker.title|typogrify }}</p>
+                {{ event.speaker.bio|markdown|typogrify }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="add">
+            <ul>
+                <li><a href="{% url 'events_event_ical' event.slug %}">{% trans "Add to iCal" %}</a></li>
+                <li><a href="{% url 'events_event_outlook' event.slug %}">{% trans "Add to Outlook" %}</a></li>
+                <li><a href="https://www.google.com/calendar/render?action=TEMPLATE&amp;text={{ event.title|urlencode }}&amp;dates={{ event.date_time|date:'Ymd' }}T{{ event.date_time|date:'His' }}/{{ event.date_time_endish|date:'Ymd' }}T{{ event.date_time_endish|date:'His' }}&amp;details={{ event.body|safe|markdown|striptags|add_break|urlencode }}%0A%0Ahttp://{{ site.domain|urlencode }}{{ event.get_absolute_url|urlencode }}&amp;location={{ event.place|urlencode }}&amp;sprop=name:{{ site.name }}&amp;sprop=website:http://{{ site.domain|urlencode }}{{ event.get_absolute_url|urlencode }}&amp;trp=true">{% trans "Add to Google" %}</a></li>
+            </ul>
+        </div>
+    
+    </div>
+
+</div>
+
+
+    {% if event.get_next or event.get_previous %}
+    <ul>
+        {% if event.get_previous %}<li class="previous">Previous: <a href="{{ event.get_previous.get_absolute_url }}">{% blocktrans with title=event.get_previous.title|typogrify|striptags %}{{ title }}{% endblocktrans %}</a></li>{% endif %}
+        {% if event.get_next %}<li class="next">Next: <a href="{{ event.get_next.get_absolute_url }}">{% blocktrans with title=event.get_next.title|typogrify|striptags %}{{ title }}{% endblocktrans %}</a></li>{% endif %}
+    </ul>
+    {% endif %}
+
+
+    {% include "includes/events_feeds.html" %}
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+    {% comment %}
+    <script src="http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js"></script>
+    <script>
+        mapbox.auto('map', 'examples.map-vyofok3q');
+    </script>
+    {% endcomment %}
+{% endblock %}

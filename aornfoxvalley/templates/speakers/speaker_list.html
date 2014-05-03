@@ -1,0 +1,46 @@
+{% extends "speakers/speakers_base.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags %}
+
+
+{% block title %}{% trans "Speakers" %} | {% endblock %}
+
+
+{% block body_class %}{{ block.super }} speaker_list{% endblock %}
+
+
+{% block main %}
+
+<h1>{% trans "Speakers" %}</h1>
+
+<div class="speaker_list items">
+    {% for speaker in speaker_list %}
+    <div class="speaker item">
+        <h2>{{ speaker.name|typogrify }}</h2>
+        <div class="title">
+            <p>{{ speaker.title|typogrify }}</p>
+        </div>
+        <div class="body">
+            {% if speaker.image %}
+            <div class="image right"><img src="{{ speaker.image.url }}" width="{{ speaker.image.width }}" height="{{ speaker.image.height }}" alt="{{ speaker.name|typogrify|striptags }}"></div>
+            {% endif %}
+            {{ speaker.bio|markdown|typogrify|emoji }}
+            {% if speaker.url %}
+            <div class="url">
+                <p><a href="{{ speaker.url }}">{{ speaker.website }}</a></p>
+            </div>
+            {% endif %}
+        </div>
+        <div class="events">
+            <h3>{% trans "Spoke at" %}</h3>
+            <ul>
+                {% for event in speaker.event_set.all %}
+                <li><a href="{{ event.get_absolute_url }}">{{ event.title|typogrify }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

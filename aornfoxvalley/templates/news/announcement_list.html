@@ -1,0 +1,34 @@
+{% extends "news/news_base.html" %}
+
+{% load i18n markup typogrify_tags emoji_tags %}
+
+
+{% block title %}{% trans "Announcements" %} | {% endblock %}
+
+
+{% block body_class %}{{ block.super }} announcement_list{% endblock %}
+
+
+{% block main %}
+
+<h1>{% trans "Announcements" %}</h1>
+
+<div class="announcement_list list">
+
+{% for announcement in announcement_list %}
+    <div class="announcement item">
+        <h2><a href="{{ announcement.get_absolute_url }}">{{ announcement.title|typogrify }}</a></h2>
+        {% if announcement.image %}
+        <div class="image right"><a href="{{ announcement.get_absolute_url }}"><img src="{{ announcement.image.url }}" width="{{ announcement.image.width }}" height="{{ announcement.image.height }}" alt="{{ announcement.title|typogrify|striptags }}"></a></div>
+        {% endif %}
+        {{ announcement.body|markdown|typogrify|emoji }}
+        <p><a href="{{ announcement.get_absolute_url }}">{% trans "Details" %}</a></p>
+    </div>
+{% endfor %}
+</div>
+
+
+{% include "includes/news_feeds.html" %}
+
+
+{% endblock %}
