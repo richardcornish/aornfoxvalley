@@ -154,8 +154,8 @@ TEMPLATE_LOADERS = (
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 TEMPLATE_CONTEXT_PROCESSORS += (
-    'aornfoxvalley.context_processors.site.get_site',
-    'aornfoxvalley.context_processors.site.get_email',
+    'aornfoxvalley.context_processors.site',
+    'aornfoxvalley.context_processors.email',
 )
 
 TEMPLATE_DIRS = (
