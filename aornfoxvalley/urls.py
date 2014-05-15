@@ -1,4 +1,7 @@
 from django.conf.urls import patterns, include, url
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
+from django.conf import settings
 
 from django.contrib import admin
 admin.autodiscover()
@@ -30,4 +33,9 @@ urlpatterns = patterns('',
 
 )
 
+# Custom 500 error handler to render {{ site }}
 handler500 = 'aornfoxvalley.views.server_error'
+
+# Static/media for local development
+if getattr(settings, 'DEBUG', False):
+    urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
